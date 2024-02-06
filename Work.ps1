@@ -44,3 +44,8 @@ Stop-Service -Name "Spooler" -Force
 Remove-Item "%systemroot%\system32\spool\printers\*.shd" 
 Remove-Item "%systemroot%\system32\spool\printers\*.spl" 
 Start-Service -Name "Spooler"
+
+# Remove local GP settings
+secedit /configure /cfg %windir%\inf\defltbase.inf /db defltbase.sdb /verbose 
+Remove-Item -Path "$env:WinDir\System32\GroupPolicyUsers" -Force -Recurse
+Remove-Item -Path "$env:WinDir\System32\GroupPolicy" -Force -Recurse

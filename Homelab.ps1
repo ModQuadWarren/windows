@@ -1,3 +1,4 @@
+## ENABLE PSREMOTING ON WINDOWS SERVER ##
 # check current WSMan Trusted Hosts:
 Get-Item WSMan:\localhost\Client\TrustedHosts
 

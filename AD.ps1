@@ -1,0 +1,51 @@
+## Set up ADDS ##
+Install-WindowsFeature -Name AD-Domain-Services -IncludeManagementTools
+Import-Module ADDSDeployment
+Install-ADDSForest
+
+# Verify DNS Server Role is installed
+Get-WindowsFeature -Name 'DNS'
+
+# Create Domain Admin Account
+New-ADUser -Name "Rob Casey" -GivenName Rob -Surname Casey -SamAccountName rcasey -UserPrincipalName rcasey@caseylab.local -PasswordNeverExpires $true -AccountPassword (Read-Host -AsSecureString "AccountPassword") -PassThru | Enable-ADAccount
+
+# Add user to Domain Admins to manage DC remotely:
+Add-ADGroupMember -Identity "Domain Admins" -Members rcasey
+
+# Confirm user was added to Security Group(s)
+Get-ADGroupMember -Identity "Domain Admins" -Recursive
+
+## Add a 2nd Domain Controller
+# set network settings in sconfig or GUI, primary DNS must be set to DC!
+
+$HashArguments = @{
+    Credential = (Get-Credential "caseylab\rcasey")
+    DomainName = "caseylab.local"
+    InstallDns = $true
+}
+Install-ADDSDomainController @HashArguments
+
+## DHCP ##
+# Install Role, Security Groups, & Authorize DHCP Server
+Install-WindowsFeature -Name DHCP -IncludeManagementTools
+netsh dhcp add securitygroups
+Restart-Service dhcpserver
+Add-DhcpServerInDC -DnsName DC01.caseylab.local -IPAddress 192.168.210.200
+Get-DhcpServerInDC
+
+# Server level DNS Dynamic Update:
+Set-DhcpServerv4DnsSetting -ComputerName "DC01.caseylab.local" -DynamicUpdates "Always" -DeleteDnsRRonLeaseExpiry $True
+$Credential = Get-Credential
+Set-DhcpServerDnsCredential -Credential $Credential -ComputerName "DC01.corp.contoso.com"
+
+# Configure initial Scope
+Add-DhcpServerv4Scope -name "Caseylab" -StartRange 192.168.208.110 -EndRange 192.168.211.254 -SubnetMask 255.255.252.0 -State Active
+Set-DhcpServerv4OptionValue -DnsDomain "caseylab.local" -Router 192.168.210.1 -DnsServer 10.0.0.1
+
+
+## install RSAT tools on remote (management) PC (if they are not found in 'other Windows features')
+Add-WindowsCapability -Online -Name "RSAT.ActiveDirectory.DS-LDS.Tools"
+Add-WindowsCapability -Online -Name "RSAT.DNS.Server"
+Add-WindowsCapability -Online -Name "RSAT.DHCP.Tools"
+Add-WindowsCapability -Online -Name "RSAT.ServerManager.Tools"
+Add-WindowsCapability -Online -Name "RSAT.GroupPolicy.Management.Tools"

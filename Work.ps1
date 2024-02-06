@@ -62,3 +62,32 @@ net use s: \\tower\movies /persistent:Yes
  
 # Remove 
 net use s: /delete 
+
+## Local Users & Groups
+# Get local users/groups
+Get-LocalUser
+Get-LocalGroup
+
+# Get groups of a local user
+net user rob
+
+# create new local user
+$Password = Read-Host -AsSecureString
+New-LocalUser -Name rob -Description “Second Admin Account” -Password $Password
+
+# check local admins
+Get-LocalGroupMember Administrators
+
+# remove users from local admin group
+$members = "Admin02", "MicrosoftAccount\username@Outlook.com", "AzureAD\DavidChew@contoso.com", "CONTOSO\Domain Admins"
+Remove-LocalGroupMember -Group "Administrators" -Member $members
+
+# add LOCAL account/group to LOCAL administrators group
+$members = "Admin02", "MicrosoftAccount\username@Outlook.com", "AzureAD\DavidChew@contoso.com", "CONTOSO\Domain Admins"
+Add-LocalGroupMember -Group "Administrators" -Member $members
+
+# add DOMAIN account/group to LOCAL administrators group
+Add-LocalGroupMember -Group “Administrators” -Member “Contoso\rob”
+
+# Disable local Admin User Account
+Disable-LocalUser -Name "Administrator"

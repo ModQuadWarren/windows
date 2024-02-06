@@ -30,7 +30,7 @@ Suspend-BitLocker -MountPoint "C:"
 Resume-BitLocker -MountPoint "C:"
  
 # Manually add Bitlocker Recovery Key to AD: 
-manage-bde -protectors -get c: 
+manage-bde -protectors -get c:
  
 # Then take the Numerical Password ID and plug it in to the following command: 
 manage-bde -protectors c: -adbackup -id '{<BACKUPID>}'
@@ -49,3 +49,16 @@ Start-Service -Name "Spooler"
 secedit /configure /cfg %windir%\inf\defltbase.inf /db defltbase.sdb /verbose 
 Remove-Item -Path "$env:WinDir\System32\GroupPolicyUsers" -Force -Recurse
 Remove-Item -Path "$env:WinDir\System32\GroupPolicy" -Force -Recurse
+
+# Display open ports
+netstat -aon | findstr /i listening
+
+## Drive Maps ## 
+# Query  
+net use 
+ 
+# Add 
+net use s: \\tower\movies /persistent:Yes 
+ 
+# Remove 
+net use s: /delete 

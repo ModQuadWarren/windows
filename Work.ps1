@@ -91,3 +91,12 @@ Add-LocalGroupMember -Group “Administrators” -Member “Contoso\rob”
 
 # Disable local Admin User Account
 Disable-LocalUser -Name "Administrator"
+
+# send wake-on-LAN packet
+$Mac = "B4:2E:99:E0:16:07"
+$MacByteArray = $Mac -split "[:-]" | ForEach-Object { [Byte] "0x$_"}
+[Byte[]] $MagicPacket = (,0xFF * 6) + ($MacByteArray  * 16)
+$UdpClient = New-Object System.Net.Sockets.UdpClient
+$UdpClient.Connect(([System.Net.IPAddress]::Broadcast),7)
+$UdpClient.Send($MagicPacket,$MagicPacket.Length)
+$UdpClient.Close()

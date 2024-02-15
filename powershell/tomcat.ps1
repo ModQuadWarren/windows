@@ -1,7 +1,7 @@
 # Print environment variable for JAVA_HOME / JRE_HOME
-echo $env:JAVA_HOME
+Write-Output $env:JAVA_HOME
 # OR #
-echo $env:JRE_HOME
+Write-Output $env:JRE_HOME
 
 # Setting JAVA_HOME
 [Environment]::SetEnvironmentVariable("JAVA_HOME", "C:\Program Files\Java\jre-1.8\bin", [System.EnvironmentVariableTarget]::Machine)

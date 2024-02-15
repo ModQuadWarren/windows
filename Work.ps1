@@ -8,7 +8,7 @@ enter-pssession *serverName*
 Get-WindowsFeature | Where-Object {($_.InstallState -eq "Installed") -and ($_.FeatureType -eq "Role")} | Select-Object Name, InstallState, FeatureType
  
 # Query pending Windows updates: 
-$searchresult.Updates.Count 
+$searchresult.Updates.Count
  
 # Find Serial Number: 
 Get-CimInstance Win32_BIOS 
@@ -19,7 +19,6 @@ get-aduser -filter 'enabled -eq $true' -Properties lastlogondate | Where-object 
 # Computer Accounts not logged on in 90 days > export to csv: 
 $90DaysAgo = (Get-Date).AddDays(-90)
 Get-ADComputer -Filter {LastLogonDate -lt $90DaysAgo -or LastLogonDate -eq $null} -Properties LastLogonDate | Select-Object Name, LastLogonDate
-
 
 # Find Currently Logged-in user: 
 Get-WMIObject -class Win32_ComputerSystem | Select-Object username

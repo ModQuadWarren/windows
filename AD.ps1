@@ -30,17 +30,20 @@ Install-ADDSDomainController @HashArguments
 Install-WindowsFeature -Name DHCP -IncludeManagementTools
 netsh dhcp add securitygroups
 Restart-Service dhcpserver
-Add-DhcpServerInDC -DnsName DC01.caseylab.local -IPAddress 192.168.210.200
+Add-DhcpServerInDC -DnsName DC01.caseylab.local -IPAddress 10.30.0.101
 Get-DhcpServerInDC
+
+# (optional)
+Set-ItemProperty –Path registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\ServerManager\Roles\12 –Name ConfigurationState –Value 2
 
 # Server level DNS Dynamic Update:
 Set-DhcpServerv4DnsSetting -ComputerName "DC01.caseylab.local" -DynamicUpdates "Always" -DeleteDnsRRonLeaseExpiry $True
 $Credential = Get-Credential
-Set-DhcpServerDnsCredential -Credential $Credential -ComputerName "DC01.corp.contoso.com"
+Set-DhcpServerDnsCredential -Credential $Credential -ComputerName "DC03.caseylab.local"
 
 # Configure initial Scope
-Add-DhcpServerv4Scope -name "Caseylab" -StartRange 192.168.208.110 -EndRange 192.168.211.254 -SubnetMask 255.255.252.0 -State Active
-Set-DhcpServerv4OptionValue -DnsDomain "caseylab.local" -Router 192.168.210.1 -DnsServer 10.0.0.1
+Add-DhcpServerv4Scope -name "PVE" -StartRange 10.10.0.110 -EndRange 10.10.0.199 -SubnetMask 255.255.255.0 -State Active
+Set-DhcpServerv4OptionValue -DnsDomain "caseylab.local" -Router 10.10.0.254 -DnsServer 10.30.0.101,10.20.0.102,10.10.0.103
 
 
 ## install RSAT tools on remote (management) PC (if they are not found in 'other Windows features')

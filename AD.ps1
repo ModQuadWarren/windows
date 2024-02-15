@@ -52,4 +52,3 @@ Add-WindowsCapability -Online -Name "RSAT.DNS.Server"
 Add-WindowsCapability -Online -Name "RSAT.DHCP.Tools"
 Add-WindowsCapability -Online -Name "RSAT.ServerManager.Tools"
 Add-WindowsCapability -Online -Name "RSAT.GroupPolicy.Management.Tools"
-

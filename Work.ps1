@@ -6,7 +6,13 @@ enter-pssession *serverName*
  
 # Query Installed Server Roles & Features: 
 Get-WindowsFeature | Where-Object {($_.InstallState -eq "Installed") -and ($_.FeatureType -eq "Role")} | Select-Object Name, InstallState, FeatureType
- 
+
+# PSWindowsUpdate
+Install-Module -Name PSWindowsUpdate -Force -AllowClobber
+Import-Module PSWindowsUpdate
+Get-WindowsUpdate | Install-WindowsUpdate -AcceptAll -AutoReboot
+invoke-WUJob -Script { Install-WindowsUpdate -AcceptAll -SendReport -IgnoreReboot } -Confirm:$false -verbose -RunNow
+
 # Query pending Windows updates: 
 $searchresult.Updates.Count
  

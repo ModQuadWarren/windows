@@ -1,13 +1,18 @@
-# Print environment variable for JAVA_HOME / JRE_HOME
+# Check $env variables for JAVA_HOME/JRE_HOME and CATALINA
 Write-Output $env:JAVA_HOME
 # OR #
 Write-Output $env:JRE_HOME
+# AND#
+Write-Output $env:CATALINA_HOME
 
 # Setting JAVA_HOME
 [Environment]::SetEnvironmentVariable("JAVA_HOME", "C:\Program Files\Java\jre-1.8\bin", [System.EnvironmentVariableTarget]::Machine)
 
 # Setting JRE_HOME (optional)
 [Environment]::SetEnvironmentVariable("JRE_HOME", "C:\Program Files\Java\jre-1.8\bin", [System.EnvironmentVariableTarget]::Machine)
+
+# Setting CATALINA_HOME (optional)
+[Environment]::SetEnvironmentVariable("CATALINA_HOME", "C:\Program Files\Apache Software Foundation\Tomcat 10.1\bin", [System.EnvironmentVariableTarget]::Machine)
 
 # Adding JDK and JRE bin directories to PATH (optional)
 $jdkBin = "C:\Program Files\Java\jdk1.8.0_291\bin"
@@ -25,3 +30,7 @@ Start-Service -Name "Tomcat10"
 
 # check logs
 Get-ChildItem -Path "C:\Program Files\Apache Software Foundation\Tomcat 10.1\logs\" | Sort-Object LastWriteTime -Descending
+
+
+# HTTP stuff
+curl condor.depaul.edu/mkalin/

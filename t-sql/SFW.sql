@@ -59,3 +59,7 @@ SELECT Name,
 	ListPrice * .85 AS SalePrice
 FROM Production.Product
 WHERE ListPrice > 0;
+
+-- Challenge: Write a SELECT Statement
+SELECT  
+WHERE

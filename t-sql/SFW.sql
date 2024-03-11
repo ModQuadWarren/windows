@@ -35,3 +35,27 @@ WHERE GroupName = 'Research and Development';
 SELECT *
 FROM HumanResources.Department
 WHERE GroupName IN('Research and Development' , 'Quality Assurance')
+
+-- Sort records with ORDER BY
+SELECT *
+FROM HumanResources.Department
+ORDER BY GroupName;
+
+-- Add more parameters for sorting
+SELECT *
+FROM HumanResources.Department
+ORDER BY GroupName DESC, DepartmentID --now each group is listed by 1- name, then 2- dept ID
+
+-- Column Aliases (make reports more user-friendly)
+SELECT Name AS 'Department Name',
+	GroupName AS 'Management Group'
+FROM HumanResources.Department
+
+-- Create values with constants and math
+SELECT Name,
+	ProductNumber,
+	'AdventureWorks' AS Manufacturer,
+	ListPrice,
+	ListPrice * .85 AS SalePrice
+FROM Production.Product
+WHERE ListPrice > 0;

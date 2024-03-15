@@ -75,3 +75,21 @@ FROM Sales.SalesTaxRate
 WHERE (TaxRate >= 7) AND (TaxRate <= 10);
 
 -- NULL values
+-- base query
+SELECT WorkOrderID,
+	ScrappedQty,
+	ScrapReasonID
+FROM Production.WorkOrder;
+
+-- filter out NULL results
+SELECT WorkOrderID,
+	ScrappedQty,
+	ScrapReasonID
+FROM Production.WorkOrder
+WHERE ScrapReasonID IS NOT NULL;
+
+-- subtitute NULL value 
+SELECT WorkOrderID,
+	ScrappedQty,
+	ISNULL( ScrapReasonID, 99) AS ScrapReason
+FROM Production.WorkOrder

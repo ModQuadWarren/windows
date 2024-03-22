@@ -105,3 +105,20 @@ $UdpClient = New-Object System.Net.Sockets.UdpClient
 $UdpClient.Connect(([System.Net.IPAddress]::Broadcast),7)
 $UdpClient.Send($MagicPacket,$MagicPacket.Length)
 $UdpClient.Close()
+
+# Get system info (special format)
+$totalMemory = (Get-CimInstance Win32_PhysicalMemory | Measure-Object -Property capacity -Sum).sum /1gb
+$vCPUCount = (Get-WmiObject -Class Win32_ComputerSystem).NumberOfLogicalProcessors
+
+# Create a separate table for Total Memory and vCPU Count
+$systemInfo = New-Object PSObject
+$systemInfo | Add-Member -NotePropertyName "Memory (GB)" -NotePropertyValue $totalMemory
+$systemInfo | Add-Member -NotePropertyName "vCPU Count" -NotePropertyValue $vCPUCount
+$systemInfo | Format-Table -AutoSize
+
+# Create the original table for Drive and Capacity
+Get-PSDrive -PSProvider FileSystem | 
+Where-Object { $_.Root -ne $null } | 
+Select-Object @{Name="Drive"; Expression={$_.Root}}, 
+              @{Name="Capacity (GB)"; Expression={([math]::Round(($_.Used + $_.Free) / 1GB, 1))}} | 
+Format-Table -AutoSize

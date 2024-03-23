@@ -122,3 +122,4 @@ Where-Object { $_.Root -ne $null } |
 Select-Object @{Name="Drive"; Expression={$_.Root}}, 
               @{Name="Capacity (GB)"; Expression={([math]::Round(($_.Used + $_.Free) / 1GB, 1))}} | 
 Format-Table -AutoSize
+#

@@ -106,6 +106,7 @@ $UdpClient.Connect(([System.Net.IPAddress]::Broadcast),7)
 $UdpClient.Send($MagicPacket,$MagicPacket.Length)
 $UdpClient.Close()
 
+## print disk, Vcpu, memory specs ##
 # Get system info (special format)
 $totalMemory = (Get-CimInstance Win32_PhysicalMemory | Measure-Object -Property capacity -Sum).sum /1gb
 $vCPUCount = (Get-WmiObject -Class Win32_ComputerSystem).NumberOfLogicalProcessors
@@ -114,11 +115,23 @@ $vCPUCount = (Get-WmiObject -Class Win32_ComputerSystem).NumberOfLogicalProcesso
 $systemInfo = New-Object PSObject
 $systemInfo | Add-Member -NotePropertyName "Memory (GB)" -NotePropertyValue $totalMemory
 $systemInfo | Add-Member -NotePropertyName "vCPU Count" -NotePropertyValue $vCPUCount
-$systemInfo | Format-Table -AutoSize
+$systemInfoOutput = $systemInfo | Format-Table -AutoSize | Out-String
 
 # Create the original table for Drive and Capacity
-Get-PSDrive -PSProvider FileSystem | 
+$driveInfo = Get-PSDrive -PSProvider FileSystem | 
 Where-Object { $_.Root -ne $null } | 
 Select-Object @{Name="Drive"; Expression={$_.Root}}, 
               @{Name="Capacity (GB)"; Expression={([math]::Round(($_.Used + $_.Free) / 1GB, 1))}} | 
-Format-Table -AutoSize
+Format-Table -AutoSize | Out-String
+
+# Combine the outputs
+$output = $systemInfoOutput + $driveInfo
+
+# Display the output
+Write-Output $output
+
+# Copy output to clipboard
+$output | Set-Clipboard
+
+# Pause the script
+pause

@@ -50,5 +50,10 @@ Set-DhcpServerv4OptionValue -DnsDomain "caseylab.local" -Router 10.10.0.254 -Dns
 Add-WindowsCapability -Online -Name "RSAT.ActiveDirectory.DS-LDS.Tools"
 Add-WindowsCapability -Online -Name "RSAT.DNS.Server"
 Add-WindowsCapability -Online -Name "RSAT.DHCP.Tools"
-Add-WindowsCapability -Online -Name "RSAT.ServerManager.Tools"
 Add-WindowsCapability -Online -Name "RSAT.GroupPolicy.Management.Tools"
+Add-WindowsCapability -Online -Name "RSAT.ServerManager.Tools"
+
+# Renaming a Domain Controller properly: 
+netdom computername WIN-PAUQ93AOHVB.caseylab.local /add:dc01.caseylab.local
+netdom computername WIN-PAUQ93AOHVB.caseylab.local /makeprimary:dc01.caseylab.local
+shutdown /r /f /t 0
